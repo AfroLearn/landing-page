@@ -1,0 +1,9 @@
+# AfroLearn landing page — static single-page site, no build step.
+[build]
+  publish = "."
+
+# Long-cache fonts/assets; HTML stays fresh so edits go live on redeploy.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

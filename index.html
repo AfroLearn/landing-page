@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfroLearn — Pan-African STEAM Education</title>
+<meta name="description" content="AfroLearn is a GenAI platform that helps teachers, professors, and lifelong learners build STEAM lesson plans grounded in African and African Diaspora history — Ubuntu, Ma&#39;at, and Sankofa.">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&amp;family=Sora:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E6;
+    --cream-soft:#F0E8D8;
+    --ink:#21201D;
+    --indigo:#232C4F;
+    --terracotta:#C2552E;
+    --gold:#E3A53C;
+    --green:#3C6E52;
+    --max:1180px;
+    --edge: clamp(1.5rem, 5vw, 4rem);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Sora', sans-serif;
+    color:var(--ink);
+    background:var(--cream);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{display:block;max-width:100%;}
+
+  h1,h2,h3,h4{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    line-height:1.08;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  p{margin:0;}
+  a{color:inherit;}
+
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    font-weight:700;
+  }
+
+  .wrap{
+    max-width:var(--max);
+    margin:0 auto;
+    padding:0 var(--edge);
+  }
+
+  /* ===== Buttons ===== */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:0.5rem;
+    font-family:'Space Mono', monospace;
+    font-size:0.8rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    font-weight:700;
+    padding:0.95rem 1.6rem;
+    border-radius:999px;
+    border:1.5px solid var(--ink);
+    text-decoration:none;
+    transition:transform 0.15s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    cursor:pointer;
+    background:none;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn:focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
+  .btn-primary{background:var(--terracotta); color:var(--cream); border-color:var(--terracotta);}
+  .btn-primary:hover{box-shadow:5px 5px 0 var(--ink);}
+  .btn-ghost{background:transparent; color:var(--ink); border-color:var(--ink);}
+  .btn-ghost:hover{background:var(--ink); color:var(--cream);}
+  .btn-light{background:var(--cream); color:var(--indigo); border-color:var(--cream);}
+  .btn-light:hover{box-shadow:5px 5px 0 var(--gold);}
+
+  /* ===== Nav ===== */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(247,241,230,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid rgba(33,32,29,0.08);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1.1rem var(--edge);
+    max-width:var(--max); margin:0 auto;
+  }
+  .logo{
+    font-family:'Fraunces', serif;
+    font-weight:900;
+    font-size:1.35rem;
+    letter-spacing:-0.02em;
+    text-decoration:none;
+    color:var(--ink);
+    display:flex; align-items:center; gap:0.5rem;
+  }
+  .logo .dot{color:var(--terracotta);}
+  .nav-links{
+    display:flex; align-items:center; gap:2.1rem;
+    font-size:0.92rem; font-weight:600;
+  }
+  .nav-links a{text-decoration:none; position:relative; padding-bottom:4px;}
+  .nav-links a::after{
+    content:""; position:absolute; left:0; bottom:0; width:0; height:2px;
+    background:var(--terracotta); transition:width 0.2s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+  .nav-cta{display:none;}
+  @media (min-width:880px){ .nav-cta{display:inline-flex;} }
+  .nav-links .links-only{display:flex; gap:2.1rem;}
+  @media (max-width:879px){
+    .links-only{display:none;}
+  }
+  .menu-toggle{display:none; background:none; border:none; cursor:pointer; padding:0.4rem;}
+  @media (max-width:879px){ .menu-toggle{display:block;} }
+  .menu-toggle svg{width:26px;height:26px;}
+  .mobile-panel{
+    display:none; flex-direction:column; gap:1.1rem;
+    padding:0 var(--edge) 1.5rem;
+    font-weight:600; font-size:1rem;
+  }
+  .mobile-panel.open{display:flex;}
+  .mobile-panel a{text-decoration:none;}
+
+  /* ===== Pattern band (signature motif) ===== */
+  .pattern-band{
+    width:100%; height:14px; display:block;
+  }
+  .pattern-band svg{width:100%; height:100%; display:block;}
+
+  /* ===== Hero ===== */
+  .hero{
+    position:relative;
+    padding:clamp(3rem,8vw,6.5rem) 0 clamp(2.5rem,6vw,4rem);
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns:1fr; gap:3rem;
+    align-items:center;
+  }
+  @media (min-width:960px){
+    .hero-grid{grid-template-columns:1.15fr 0.85fr;}
+  }
+  .hero h1{
+    font-size:clamp(2.6rem, 6vw, 4.6rem);
+    max-width:14ch;
+  }
+  .hero h1 em{
+    font-style:italic; color:var(--terracotta);
+  }
+  .hero-sub{
+    margin-top:1.5rem;
+    font-size:1.08rem;
+    max-width:46ch;
+    color:#4a463f;
+  }
+  .hero-ctas{
+    margin-top:2.2rem;
+    display:flex; gap:1rem; flex-wrap:wrap;
+  }
+  .hero-eyebrow{margin-bottom:1.2rem; color:var(--green);}
+
+  /* Hero visual: woven grid */
+  .weave{
+    position:relative;
+    aspect-ratio:1/1;
+    border-radius:28px;
+    overflow:hidden;
+    background:var(--indigo);
+    display:grid;
+  }
+  .weave svg{width:100%;height:100%;}
+
+  /* ===== Pattern Decoder (signature interactive) ===== */
+  .decoder{
+    margin-top: clamp(3rem,6vw,5rem);
+    border-top:1px solid rgba(33,32,29,0.12);
+    padding-top: clamp(2rem,4vw,3rem);
+  }
+  .decoder-head{max-width:62ch; margin-bottom:2rem;}
+  .decoder-head h2{font-size:clamp(1.6rem,3.2vw,2.2rem); margin-top:0.6rem;}
+  .decoder-head p{margin-top:1rem; color:#4a463f;}
+  .decoder-grid{
+    display:grid; gap:0.9rem;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  }
+  .decoder-tile{
+    border:1.5px solid var(--ink);
+    border-radius:18px;
+    padding:1.1rem;
+    background:var(--cream-soft);
+    cursor:pointer;
+    text-align:left;
+    font-family:inherit;
+    transition:background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    display:flex; flex-direction:column; gap:0.7rem;
+  }
+  .decoder-tile:hover, .decoder-tile.active{
+    background:var(--ink); color:var(--cream); transform:translateY(-3px);
+    box-shadow:5px 5px 0 var(--gold);
+  }
+  .decoder-tile:hover svg, .decoder-tile.active svg{
+    --stroke: var(--cream);
+  }
+  .decoder-tile svg{width:38px;height:38px; --stroke: var(--ink); transition:none;}
+  .decoder-tile svg *{stroke:var(--stroke); transition:stroke 0.2s ease;}
+  .decoder-label{
+    font-family:'Space Mono', monospace; font-size:0.78rem;
+    letter-spacing:0.12em; text-transform:uppercase; font-weight:700;
+  }
+  .decoder-panel{
+    margin-top:1.6rem;
+    border:1.5px solid var(--ink);
+    border-radius:18px;
+    padding:1.6rem clamp(1.4rem,3vw,2.2rem);
+    background:var(--indigo);
+    color:var(--cream);
+    min-height:118px;
+    display:flex; flex-direction:column; gap:0.5rem;
+    justify-content:center;
+  }
+  .decoder-panel .panel-eyebrow{color:var(--gold);}
+  .decoder-panel h3{font-size:1.25rem; color:var(--cream); margin-top:0.35rem;}
+  .decoder-panel p{margin-top:0.5rem; max-width:62ch; color:#E7E1D4;}
+
+  /* ===== Section generic ===== */
+  section{padding: clamp(3.5rem,8vw,6.5rem) 0;}
+  .section-head{max-width:60ch; margin-bottom:3rem;}
+  .section-head h2{font-size:clamp(2rem,4.4vw,3rem); margin-top:0.7rem;}
+  .section-head p{margin-top:1.1rem; color:#4a463f; font-size:1.05rem;}
+  .section-dark{background:var(--indigo); color:var(--cream);}
+  .section-dark .section-head p{color:#CFC9BC;}
+  .section-dark .eyebrow{color:var(--gold);}
+
+  /* ===== The Gap (stats) ===== */
+  .gap-grid{
+    display:grid; gap:2rem;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  }
+  .stat{border-top:3px solid var(--terracotta); padding-top:1.2rem;}
+  .stat .num{font-family:'Fraunces',serif; font-weight:900; font-size:clamp(2.4rem,5vw,3.4rem); line-height:1;}
+  .stat p{margin-top:0.6rem; color:#4a463f; font-size:0.96rem;}
+
+  /* ===== Approach pillars ===== */
+  .pillars{
+    display:grid; gap:1.6rem;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    margin-bottom:3.5rem;
+  }
+  .pillar{
+    background:var(--cream-soft);
+    border-radius:20px;
+    padding:1.8rem;
+    border:1.5px solid rgba(33,32,29,0.1);
+  }
+  .pillar .eyebrow{color:var(--terracotta);}
+  .pillar h3{font-size:1.35rem; margin-top:0.5rem;}
+  .pillar p{margin-top:0.7rem; color:#4a463f; font-size:0.96rem;}
+
+  /* ===== Case study compare ===== */
+  .compare{
+    display:grid; gap:1.4rem;
+    grid-template-columns:1fr;
+  }
+  @media (min-width:840px){ .compare{grid-template-columns:1fr 1fr;} }
+  .compare-col{
+    border-radius:20px; padding:1.9rem;
+    border:1.5px solid var(--ink);
+  }
+  .compare-col.old{background:transparent;}
+  .compare-col.new{background:var(--green); color:var(--cream); border-color:var(--green);}
+  .compare-col .eyebrow{margin-bottom:0.8rem;}
+  .compare-col.old .eyebrow{color:#8b8579;}
+  .compare-col.new .eyebrow{color:var(--gold);}
+  .compare-col h4{font-size:1.2rem; margin-bottom:0.7rem;}
+  .compare-col p{font-size:0.96rem;}
+  .compare-col.old p{color:#4a463f;}
+  .compare-col.new p{color:#EFEAE0;}
+  .compare-col p + p{margin-top:0.8rem;}
+
+  /* ===== Programs ===== */
+  .programs-grid{
+    display:grid; gap:1.6rem;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  }
+  .program-card{
+    border:1.5px solid var(--ink); border-radius:22px;
+    padding:2rem; display:flex; flex-direction:column; gap:1rem;
+    background:var(--cream);
+    position:relative; overflow:hidden;
+  }
+  .program-card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:6px;
+  }
+  .program-card.pc-1::before{background:var(--terracotta);}
+  .program-card.pc-2::before{background:var(--gold);}
+  .program-card h3{font-size:1.5rem;}
+  .program-meta{
+    display:flex; gap:0.6rem; flex-wrap:wrap;
+  }
+  .tag{
+    font-family:'Space Mono',monospace; font-size:0.7rem; letter-spacing:0.08em;
+    text-transform:uppercase; border:1px solid var(--ink); border-radius:999px;
+    padding:0.3rem 0.7rem; font-weight:700;
+  }
+  .program-card p{color:#4a463f; font-size:0.97rem;}
+  .program-card ul{margin:0; padding-left:1.1rem; color:#4a463f; font-size:0.95rem; display:flex; flex-direction:column; gap:0.35rem;}
+
+  /* ===== Partners ===== */
+  .partners-grid{
+    display:grid; gap:1.6rem;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  }
+  .partner-card{
+    padding:2rem; border-radius:22px;
+    background:rgba(247,241,230,0.05);
+    border:1.5px solid rgba(247,241,230,0.18);
+  }
+  .partner-card .eyebrow{color:var(--gold); margin-bottom:0.8rem;}
+  .partner-card h3{font-size:1.3rem; color:var(--cream);}
+  .partner-card p{margin-top:0.8rem; color:#CFC9BC; font-size:0.96rem;}
+  .partner-card a.link{
+    margin-top:1.1rem; display:inline-flex; align-items:center; gap:0.4rem;
+    font-family:'Space Mono',monospace; font-size:0.78rem; letter-spacing:0.1em;
+    text-transform:uppercase; font-weight:700; color:var(--gold); text-decoration:none;
+    border-bottom:1.5px solid var(--gold); padding-bottom:2px;
+  }
+
+  /* ===== Contact ===== */
+  .contact-grid{
+    display:grid; gap:3rem;
+    grid-template-columns:1fr;
+  }
+  @media (min-width:900px){ .contact-grid{grid-template-columns:0.9fr 1.1fr;} }
+  .contact-info h2{font-size:clamp(2rem,4vw,2.8rem);}
+  .contact-info p{margin-top:1.1rem; color:#4a463f; max-width:42ch;}
+  .contact-info .addr{
+    margin-top:2rem; font-family:'Space Mono',monospace; font-size:0.85rem;
+    line-height:2; color:var(--ink);
+  }
+  form{
+    display:grid; gap:1.1rem;
+  }
+  .field{display:flex; flex-direction:column; gap:0.4rem;}
+  label{
+    font-family:'Space Mono',monospace; font-size:0.72rem; letter-spacing:0.14em;
+    text-transform:uppercase; font-weight:700; color:#4a463f;
+  }
+  input, select, textarea{
+    font-family:'Sora', sans-serif; font-size:1rem;
+    padding:0.85rem 1rem; border-radius:12px;
+    border:1.5px solid var(--ink); background:var(--cream);
+    color:var(--ink);
+  }
+  input:focus, select:focus, textarea:focus{outline:3px solid var(--gold); outline-offset:1px;}
+  textarea{resize:vertical; min-height:110px;}
+  .form-row{display:grid; gap:1.1rem; grid-template-columns:1fr;}
+  @media (min-width:560px){ .form-row{grid-template-columns:1fr 1fr;} }
+  .form-note{font-size:0.85rem; color:#8b8579; margin-top:0.4rem;}
+  .form-success{
+    display:none; padding:1rem 1.2rem; border-radius:12px;
+    background:var(--green); color:var(--cream); font-size:0.92rem;
+    font-weight:600;
+  }
+  .form-success.show{display:block;}
+
+  /* ===== Footer ===== */
+  footer{
+    background:var(--ink); color:var(--cream);
+    padding:3rem 0 2rem;
+  }
+  .footer-grid{
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:2.5rem;
+    border-bottom:1px solid rgba(247,241,230,0.15);
+    padding-bottom:2.2rem; margin-bottom:1.6rem;
+  }
+  .footer-brand{max-width:32ch;}
+  .footer-brand .logo{color:var(--cream);}
+  .footer-brand p{margin-top:0.9rem; color:#B8B2A4; font-size:0.92rem;}
+  .footer-cols{display:flex; gap:3rem; flex-wrap:wrap;}
+  .footer-col h4{
+    font-family:'Space Mono',monospace; font-size:0.74rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--gold); margin-bottom:0.9rem; font-weight:700;
+  }
+  .footer-col a{
+    display:block; color:#D8D2C5; text-decoration:none; font-size:0.92rem; margin-bottom:0.55rem;
+  }
+  .footer-col a:hover{color:var(--cream);}
+  .footer-bottom{
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem;
+    font-size:0.82rem; color:#8b8579; font-family:'Space Mono',monospace;
+  }
+
+  /* Reveal-on-scroll */
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity 0.7s ease, transform 0.7s ease;}
+  .reveal.visible{opacity:1; transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1; transform:none; transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a href="#top" class="logo">AfroLearn<span class="dot">.</span></a>
+    <div class="nav-links">
+      <div class="links-only">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#approach">Approach</a>
+        <a href="#for-educators">Who It's For</a>
+        <a href="#partners">Partners</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <a href="#contact" class="btn btn-ghost nav-cta">Get Involved</a>
+      <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false" id="menuToggle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="#how-it-works">How It Works</a>
+    <a href="#approach">Approach</a>
+    <a href="#for-educators">Who It's For</a>
+    <a href="#partners">Partners</a>
+    <a href="#contact">Contact</a>
+    <a href="#contact" class="btn btn-primary" style="align-self:flex-start;">Get Involved</a>
+  </div>
+</header>
+
+<div class="pattern-band" aria-hidden="true">
+  <svg viewBox="0 0 320 14" preserveAspectRatio="none">
+    <defs>
+      <pattern id="bandPattern" width="40" height="14" patternUnits="userSpaceOnUse">
+        <rect width="40" height="14" fill="var(--cream)"></rect>
+        <path d="M0 14 L10 0 L20 14 Z" fill="var(--terracotta)"></path>
+        <path d="M20 14 L30 0 L40 14 Z" fill="var(--gold)"></path>
+        <path d="M10 0 L20 14 L30 0 Z" fill="var(--indigo)"></path>
+      </pattern>
+    </defs>
+    <rect width="320" height="14" fill="url(#bandPattern)"></rect>
+  </svg>
+</div>
+
+<main id="top">
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="reveal visible" id="heroText">
+          <div class="eyebrow hero-eyebrow">Pan-African STEAM Education · GenAI Lesson Design</div>
+          <h1>Patterns carry knowledge. <em>We're building an engine that helps you teach with it.</em></h1>
+          <p class="hero-sub">AfroLearn is a GenAI platform that helps K-12 teachers, university faculty, and lifelong learners build STEAM lesson plans grounded in a growing archive of African and African Diaspora history — texts, video, interviews, and primary and secondary sources. Every lesson draws on Ubuntu, Ma'at, and Sankofa, and on Freirean critical pedagogy.</p>
+          <div class="hero-ctas">
+            <a href="#how-it-works" class="btn btn-primary">See how it works</a>
+            <a href="#partners" class="btn btn-ghost">Partner with us</a>
+          </div>
+        </div>
+        <div class="weave reveal visible" id="heroWeave" aria-hidden="true">
+          <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
+            <rect width="400" height="400" fill="#232C4F"></rect>
+            <g opacity="0.95">
+              <!-- woven stripes -->
+              <g fill="#E3A53C">
+                <rect x="0" y="40" width="400" height="22"></rect>
+                <rect x="0" y="180" width="400" height="22"></rect>
+                <rect x="0" y="320" width="400" height="22"></rect>
+              </g>
+              <g fill="#C2552E">
+                <rect x="0" y="100" width="400" height="14"></rect>
+                <rect x="0" y="250" width="400" height="14"></rect>
+              </g>
+              <g fill="#3C6E52">
+                <rect x="60" y="0" width="18" height="400"></rect>
+                <rect x="200" y="0" width="18" height="400"></rect>
+                <rect x="330" y="0" width="18" height="400"></rect>
+              </g>
+              <!-- diamonds (sankofa-inspired abstraction) -->
+              <g fill="#F7F1E6">
+                <path d="M120 90 L150 120 L120 150 L90 120 Z"></path>
+                <path d="M280 230 L310 260 L280 290 L250 260 Z"></path>
+                <path d="M40 270 L65 295 L40 320 L15 295 Z"></path>
+                <path d="M340 60 L365 85 L340 110 L315 85 Z"></path>
+              </g>
+              <g fill="none" stroke="#F7F1E6" stroke-width="3">
+                <circle cx="200" cy="320" r="22"></circle>
+                <circle cx="200" cy="320" r="34"></circle>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- ===== How It Works ===== -->
+      <div class="decoder reveal visible" id="how-it-works">
+        <div class="decoder-head">
+          <div class="eyebrow" style="color:var(--terracotta);">How It Works</div>
+          <h2>From source material to a lesson plan you can teach.</h2>
+          <p>AfroLearn pairs a curated archive of African and African Diaspora history with generative AI, so educators spend less time hunting for primary sources and more time teaching from them.</p>
+        </div>
+        <div class="pillars">
+          <div class="pillar">
+            <div class="eyebrow">Step 1</div>
+            <h3>Tell it what you're teaching</h3>
+            <p>Grade level, subject, standards, and time available — geometry for a 7th-grade class, an intro to algorithms for undergrads, a weekend workshop on West African trade networks.</p>
+          </div>
+          <div class="pillar">
+            <div class="eyebrow">Step 2</div>
+            <h3>It draws from a built archive</h3>
+            <p>Texts, video, interviews, and primary and secondary sources spanning African and Diaspora history, organized through Ubuntu, Ma'at, and Sankofa — not a generic web search.</p>
+          </div>
+          <div class="pillar">
+            <div class="eyebrow">Step 3</div>
+            <h3>You get a complete lesson plan</h3>
+            <p>Objectives, source material, activities, and assessment — ready to teach as-is or adapt to your classroom, course, or community program.</p>
+          </div>
+        </div>
+        <p style="max-width:60ch; color:#4a463f; font-size:0.95rem;">AfroLearn's archive and lesson generator are in active development. We're building the seed corpus now and inviting founding partners to help shape it — see <a href="#partners" style="color:var(--terracotta); font-weight:600;">how to get involved</a>.</p>
+      </div>
+
+      <!-- ===== Pattern Decoder (signature interaction) ===== -->
+      <div class="decoder reveal" id="decoderSection">
+        <div class="decoder-head">
+          <div class="eyebrow" style="color:var(--green);">Decode the Visual Language</div>
+          <h2>Every motif on this site is a lesson, not decoration.</h2>
+          <p>The geometry that runs through African textile and symbol traditions encodes the same logic taught in computer science classrooms — sequence, symmetry, recursion, balance, exchange. Tap each shape to see how AfroLearn's lesson generator turns it into a STEAM concept.</p>
+        </div>
+        <div class="decoder-grid" id="decoderGrid">
+
+          <button class="decoder-tile active" data-idx="0">
+            <svg viewBox="0 0 38 38" fill="none" stroke-width="2.5" stroke-linejoin="round"><rect x="6" y="6" width="26" height="26" rx="2"></rect><rect x="12" y="12" width="14" height="14" rx="1.5"></rect><rect x="17" y="17" width="4" height="4"></rect></svg>
+            <span class="decoder-label">Recursion</span>
+          </button>
+
+          <button class="decoder-tile" data-idx="1">
+            <svg viewBox="0 0 38 38" fill="none" stroke-width="2.5" stroke-linejoin="round"><path d="M19 4 L34 19 L19 34 L4 19 Z"></path><path d="M19 4 L4 19 M19 4 L34 19"></path></svg>
+            <span class="decoder-label">Symmetry</span>
+          </button>
+
+          <button class="decoder-tile" data-idx="2">
+            <svg viewBox="0 0 38 38" fill="none" stroke-width="2.5" stroke-linecap="round"><circle cx="19" cy="19" r="14"></circle><path d="M19 5 A14 14 0 0 1 33 19"></path><circle cx="19" cy="5" r="2.4" fill="currentColor"></circle></svg>
+            <span class="decoder-label">Balance</span>
+          </button>
+
+          <button class="decoder-tile" data-idx="3">
+            <svg viewBox="0 0 38 38" fill="none" stroke-width="2.5" stroke-linejoin="round"><path d="M19 4 L30 12 V26 L19 34 L8 26 V12 Z"></path><path d="M19 4 V34 M8 12 L30 26 M30 12 L8 26"></path></svg>
+            <span class="decoder-label">Exchange</span>
+          </button>
+
+          <button class="decoder-tile" data-idx="4">
+            <svg viewBox="0 0 38 38" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 30 L13 12 L19 24 L25 8 L34 30"></path></svg>
+            <span class="decoder-label">Sequence</span>
+          </button>
+
+        </div>
+
+        <div class="decoder-panel" id="decoderPanel">
+          <div class="eyebrow panel-eyebrow">Recursion · Sankofa</div>
+          <h3>"Go back and get it" — the structure behind recursive functions</h3>
+          <p>Sankofa, the Akan principle of retrieving wisdom from the past to move forward, mirrors a recursive function: a process that calls back to a smaller version of itself to build the final result. Students learn recursion by first nesting Adinkra-style frames inside one another — then writing the function that draws them.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="pattern-band" aria-hidden="true">
+    <svg viewBox="0 0 320 14" preserveAspectRatio="none"><rect width="320" height="14" fill="url(#bandPattern)"></rect></svg>
+  </div>
+
+  <!-- ================= THE GAP ================= -->
+  <section id="gap">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow" style="color:var(--terracotta);">The Gap We're Closing</div>
+        <h2>STEAM instruction rarely connects technical skill to identity — and the tools built for educators rarely help.</h2>
+        <p>Across the continent and the diaspora, science and math instruction is largely imported wholesale, with little reference to African intellectual history or contemporary innovation — and the generative AI tools now built for lesson planning are trained on the same narrow archive. AfroLearn was built to close that gap directly, not as an add-on unit, but as the foundation of how STEAM lessons are built.</p>
+      </div>
+      <div class="gap-grid reveal">
+        <div class="stat">
+          <div class="num">1.4B</div>
+          <p>people across Africa and its diaspora whose intellectual contributions are largely absent from standard STEAM curricula and the lesson-planning tools built for them.</p>
+        </div>
+        <div class="stat">
+          <div class="num">$254B</div>
+          <p>global EdTech market, with most generative AI tools trained on the same narrow source base — rarely African or Diaspora-centered.</p>
+        </div>
+        <div class="stat">
+          <div class="num">5</div>
+          <p>national curriculum frameworks — Senegal, Kenya, South Africa, Ghana, and Tanzania — mapped for direct AfroLearn alignment.</p>
+        </div>
+        <div class="stat">
+          <div class="num">12</div>
+          <p>week modular units the engine is designed to generate, built for bilingual delivery and low-bandwidth, offline-first classrooms.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= APPROACH ================= -->
+  <section id="approach" style="background:var(--cream-soft);">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow" style="color:var(--green);">Our Approach</div>
+        <h2>Three traditions, one pedagogy.</h2>
+        <p>AfroLearn's curriculum design — and the archive its lesson generator draws from — rests on three African intellectual frameworks, delivered through Paulo Freire's critical pedagogy: learning as dialogue, not deposit.</p>
+      </div>
+
+      <div class="pillars reveal">
+        <div class="pillar">
+          <div class="eyebrow">Ubuntu</div>
+          <h3>"I am because we are."</h3>
+          <p>Collaboration is the default mode of learning. Group projects, peer review, and community capstones treat interdependence as a skill to be developed, not a workaround for group work.</p>
+        </div>
+        <div class="pillar">
+          <div class="eyebrow">Ma'at</div>
+          <h3>Balance, order, and truth</h3>
+          <p>Assessment favors mastery and reflection over high-stakes testing. Students build portfolios that document growth, not just outcomes — a more truthful record of learning.</p>
+        </div>
+        <div class="pillar">
+          <div class="eyebrow">Sankofa</div>
+          <h3>Reach back to move forward</h3>
+          <p>Every technical unit opens with a historical or cultural foundation — African mathematics, design traditions, and innovation — before moving to modern application.</p>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="eyebrow" style="color:var(--terracotta); margin-bottom:1rem;">Case Study · Teaching Algorithms</div>
+        <div class="compare">
+          <div class="compare-col old">
+            <div class="eyebrow">Conventional Approach</div>
+            <h4>Start with sorting, end with Dijkstra</h4>
+            <p>Students are introduced to algorithms through abstract sorting problems and runtime efficiency. The history of the field begins with Turing and von Neumann. The goal is optimization.</p>
+          </div>
+          <div class="compare-col new">
+            <div class="eyebrow">AfroLearn Approach</div>
+            <h4>Start with Kente cloth, end with Dijkstra</h4>
+            <p>Students first investigate the logic encoded in Kente weaving patterns, Kuba geometric design, and the recursive structure of Adinkra symbols — discovering that algorithmic thinking has deep roots in African material culture.</p>
+            <p>From there, they move into formal algorithm analysis, and examine how modern algorithmic systems encode the assumptions of whoever designed them. By the end of the unit, algorithms are understood as a human practice with history and values — not a neutral tool.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="pattern-band" aria-hidden="true">
+    <svg viewBox="0 0 320 14" preserveAspectRatio="none"><rect width="320" height="14" fill="url(#bandPattern)"></rect></svg>
+  </div>
+
+  <!-- ================= WHO IT'S FOR ================= -->
+  <section id="for-educators">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow" style="color:var(--terracotta);">Built For</div>
+        <h2>Three audiences, one archive.</h2>
+        <p>AfroLearn's lesson generator is designed for anyone teaching — formally or informally — who wants STEAM content grounded in African and African Diaspora history.</p>
+      </div>
+      <div class="programs-grid reveal">
+        <div class="program-card pc-1">
+          <div class="program-meta">
+            <span class="tag">Grades K–12</span>
+            <span class="tag">Bilingual-ready</span>
+            <span class="tag">Standards-aligned</span>
+          </div>
+          <h3>K-12 &amp; Classroom Teachers</h3>
+          <p>Generate standards-aligned STEAM lessons that open with African mathematics, design traditions, and innovation history before moving into the curriculum you already have to teach.</p>
+          <ul>
+            <li>Build a full lesson in minutes — objectives, sources, activities, and assessment</li>
+            <li>Pull directly from primary sources: interviews, archival texts, video</li>
+            <li>Adapt instantly for bilingual or low-bandwidth classrooms</li>
+          </ul>
+        </div>
+        <div class="program-card pc-2">
+          <div class="program-meta">
+            <span class="tag">Undergrad &amp; grad</span>
+            <span class="tag">Course modules</span>
+            <span class="tag">Study abroad</span>
+          </div>
+          <h3>University Faculty</h3>
+          <p>Build course modules, single-session lectures, or full syllabi that bring African and Diaspora intellectual history into STEM, design, and business curricula.</p>
+          <ul>
+            <li>Generate reading lists and discussion guides alongside lesson plans</li>
+            <li>Draw on case studies developed with AfroLearn's pilot partners</li>
+            <li>Built alongside AfroLearn's Dakar-based study abroad program</li>
+          </ul>
+        </div>
+        <div class="program-card pc-1">
+          <div class="program-meta">
+            <span class="tag">Homeschool</span>
+            <span class="tag">After-school</span>
+            <span class="tag">Self-directed</span>
+          </div>
+          <h3>Lifelong Learners &amp; Community Educators</h3>
+          <p>Build a single workshop or a multi-week unit — for a homeschool pod, an after-school program, or your own continuing education — without needing a research library.</p>
+          <ul>
+            <li>No teaching credential or institutional access required</li>
+            <li>Designed for self-directed and community-based learning</li>
+            <li>Early access open for families and independent educators</li>
+          </ul>
+        </div>
+      </div>
+      <p class="reveal" style="margin-top:2rem; max-width:60ch; color:#4a463f; font-size:0.95rem;">AfroLearn's first pilot, launching in Dakar, is where we're testing the curriculum and the lesson generator together — alongside a K-12 cohort and a university study-abroad program.</p>
+    </div>
+  </section>
+
+  <!-- ================= CURRICULUM & TRAINING PARTNERSHIPS ================= -->
+  <section id="consulting" style="background:var(--cream-soft);">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow" style="color:var(--green);">Available Now</div>
+        <h2>While we build the platform, we're building curriculum.</h2>
+        <p>AfroLearn is actively seeking partners who need Africa and African Diaspora curriculum or training support — across STEM and beyond. These paid engagements are how we stay afloat while we build the GenAI platform, and what we learn from each one feeds directly back into the lesson generator.</p>
+      </div>
+      <div class="programs-grid reveal">
+        <div class="program-card pc-1">
+          <div class="program-meta"><span class="tag">Custom</span></div>
+          <h3>Specialized Courses</h3>
+          <p>Standalone courses or single-session curricula built for your institution's specific subject, level, and audience.</p>
+        </div>
+        <div class="program-card pc-2">
+          <div class="program-meta"><span class="tag">K-12 &amp; Beyond</span></div>
+          <h3>Course Modules</h3>
+          <p>STEM and humanities modules built for K-12 schools, universities, and enrichment programs to slot into curriculum you already teach.</p>
+        </div>
+        <div class="program-card pc-1">
+          <div class="program-meta"><span class="tag">Field-Based</span></div>
+          <h3>Study Abroad Programs</h3>
+          <p>Full study abroad curricula — coursework, field study, and site logistics — designed around African and Diaspora history and innovation.</p>
+        </div>
+        <div class="program-card pc-2">
+          <div class="program-meta"><span class="tag">Cohort or 1:1</span></div>
+          <h3>Educator &amp; Faculty Workshops</h3>
+          <p>Professional development that equips teachers and faculty to bring Pan-African STEAM pedagogy into their own classrooms.</p>
+        </div>
+      </div>
+      <div class="reveal" style="margin-top:2.2rem;">
+        <a href="#contact" class="btn btn-primary">Start a curriculum conversation</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="pattern-band" aria-hidden="true">
+    <svg viewBox="0 0 320 14" preserveAspectRatio="none"><rect width="320" height="14" fill="url(#bandPattern)"></rect></svg>
+  </div>
+
+  <!-- ================= PARTNERS ================= -->
+  <section id="partners" class="section-dark">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Build With Us</div>
+        <h2>AfroLearn works best as a shared archive, not a closed product.</h2>
+        <p>We're inviting founding partners across three groups to help build the archive and shape the lesson generator — each gets a different way in.</p>
+      </div>
+      <div class="partners-grid reveal">
+        <div class="partner-card">
+          <div class="eyebrow">Ministries &amp; Continental Bodies</div>
+          <h3>Help shape what "aligned" means</h3>
+          <p>AfroLearn is being built with an eye toward existing frameworks — CESA, the AU's continental education strategy, and AUDA-NEPAD's Africa EdTech 2030 vision. We're looking for early conversations with institutions who want to help define what alignment looks like in practice.</p>
+          <a href="#contact" class="link">Start a conversation →</a>
+        </div>
+        <div class="partner-card">
+          <div class="eyebrow">Schools &amp; Universities</div>
+          <h3>Co-design the archive and the pilot</h3>
+          <p>From contributing source material and case studies to piloting the lesson generator in real classrooms — founding partners help build AfroLearn's archive, not just adopt a finished product.</p>
+          <a href="#contact" class="link">Explore partnership →</a>
+        </div>
+        <div class="partner-card">
+          <div class="eyebrow">Educators &amp; Lifelong Learners</div>
+          <h3>Get early access</h3>
+          <p>Join the waitlist to be among the first educators — in classrooms, homeschools, or community programs — to use AfroLearn's lesson generator as it's built.</p>
+          <a href="#contact" class="link">Get early access →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="pattern-band" aria-hidden="true">
+    <svg viewBox="0 0 320 14" preserveAspectRatio="none"><rect width="320" height="14" fill="url(#bandPattern)"></rect></svg>
+  </div>
+
+  <!-- ================= CONTACT ================= -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact-grid">
+        <div class="contact-info reveal">
+          <div class="eyebrow" style="color:var(--terracotta); margin-bottom:0.8rem;">Get In Touch</div>
+          <h2>Tell us where you fit in.</h2>
+          <p>Whether you're a ministry, a school, a university, an investor, or a future teammate — reach out. We respond to every message.</p>
+          <div class="addr">
+            hello@afrolearn.org<br>
+            Dakar, Senegal · Remote-first team
+          </div>
+        </div>
+        <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="contactForm" class="reveal">
+          <input type="hidden" name="form-name" value="contact">
+          <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
+          <div class="form-row">
+            <div class="field">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" required="">
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required="">
+            </div>
+          </div>
+          <div class="field">
+            <label for="role">I'm reaching out as a...</label>
+            <select id="role" name="role">
+              <option>Ministry / Continental Organization</option>
+              <option>School or University (Curriculum/Training Partnership)</option>
+              <option>Educator or Parent</option>
+              <option>Investor / Funder</option>
+              <option>Prospective Team Member</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required=""></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="justify-self:flex-start;">Send message</button>
+          <p class="form-note">This form is wired for Netlify Forms — no backend required once deployed.</p>
+          <div class="form-success" id="formSuccess">Thanks — we'll be in touch soon.</div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#top" class="logo">AfroLearn<span class="dot">.</span></a>
+        <p>Education as liberation. Technology as justice. Heritage as power.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Site</h4>
+          <a href="#how-it-works">How It Works</a>
+          <a href="#approach">Approach</a>
+          <a href="#for-educators">Who It's For</a>
+          <a href="#partners">Partners</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Connect</h4>
+          <a href="mailto:hello@afrolearn.org">Email</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AfroLearn. All rights reserved.</span>
+      <span>Built for Africa and its diaspora.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const mobilePanel = document.getElementById('mobilePanel');
+  menuToggle.addEventListener('click', () => {
+    const open = mobilePanel.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', open);
+  });
+  mobilePanel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobilePanel.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+  }));
+
+  // Pattern decoder
+  const decoderData = [
+    {
+      tag: "Recursion · Sankofa",
+      title: '"Go back and get it" — the structure behind recursive functions',
+      body: "Sankofa, the Akan principle of retrieving wisdom from the past to move forward, mirrors a recursive function: a process that calls back to a smaller version of itself to build the final result. Students learn recursion by first nesting Adinkra-style frames inside one another — then writing the function that draws them."
+    },
+    {
+      tag: "Symmetry · Kente Geometry",
+      title: "Reflection, rotation, and the math of weaving",
+      body: "Kente cloth is built from strips of repeating geometric blocks, often mirrored or rotated along an axis. Students study these transformations as formal geometry — reflection, rotation, translation — before applying the same logic to coordinate grids and basic computer graphics."
+    },
+    {
+      tag: "Balance · Ma'at",
+      title: "Equilibrium as a design constraint",
+      body: "Ma'at frames balance as a moral and structural principle. In AfroLearn's engineering units, students apply this directly: load-balancing in simple structures, balanced equations in chemistry, and balanced datasets in early statistics — all introduced through the same conceptual lens."
+    },
+    {
+      tag: "Exchange · Trade Networks",
+      title: "Modeling networks through historical trade routes",
+      body: "Trans-Saharan and Indian Ocean trade networks become the entry point for graph theory — nodes, edges, and weighted connections. Students map historical trade routes, then use the same model to represent modern logistics, social networks, and the internet."
+    },
+    {
+      tag: "Sequence · Oral History as Data",
+      title: "Griots, sequencing, and what counts as data",
+      body: "Oral history traditions — carried by griots and elders — are sequential, structured information systems passed across generations. Students examine these as data systems in their own right, then explore what gets lost when 'data' is defined narrowly as what's digitized and counted."
+    }
+  ];
+
+  const tiles = document.querySelectorAll('.decoder-tile');
+  const panel = document.getElementById('decoderPanel');
+
+  function renderPanel(idx){
+    const d = decoderData[idx];
+    panel.innerHTML = `
+      <div class="eyebrow panel-eyebrow">${d.tag}</div>
+      <h3>${d.title}</h3>
+      <p>${d.body}</p>
+    `;
+  }
+
+  tiles.forEach(tile => {
+    tile.addEventListener('click', () => {
+      tiles.forEach(t => t.classList.remove('active'));
+      tile.classList.add('active');
+      renderPanel(parseInt(tile.dataset.idx, 10));
+    });
+  });
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // Contact form (Netlify-friendly + graceful fallback)
+  const form = document.getElementById('contactForm');
+  const success = document.getElementById('formSuccess');
+  form.addEventListener('submit', (e) => {
+    // If running locally (not on Netlify), prevent navigation and show success state.
+    if (window.location.protocol === 'file:') {
+      e.preventDefault();
+      success.classList.add('show');
+      form.reset();
+    }
+    // On Netlify, the form submits normally via Netlify Forms handling.
+  });
+</script>
+
+
+
+</body></html>
